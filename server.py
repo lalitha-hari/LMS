@@ -1,14 +1,8 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, render_template, redirect, url_for, request
 
 app = Flask(__name__)
 
-# PostgreSQL configurations
-DB_HOST = 'localhost'
-DB_NAME = 'lms'
-DB_USER = 'username'
-DB_PASSWORD = 'lalithahari'
-
-# Define your routes and functions
+# Define your routes
 @app.route('/')
 def login_page():
     return render_template('login.html')
@@ -16,30 +10,26 @@ def login_page():
 @app.route('/process_student_login', methods=['POST'])
 def process_student_login():
     # Extract student login credentials from the request
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    userId = data.get('userId')
+    username = request.form.get('username')
+    userId = request.form.get('userId')
+    password = request.form.get('password')
+    user_id=1
 
-    # Your student login authentication code here
-    # You might want to validate the credentials against your database
+    # Redirect to student dashboard
+    return redirect(url_for('user_dashboard', user_id=userId))
 
-    # Assuming authentication is successful, redirect to student dashboard
-    return jsonify(success=True)
+
 
 @app.route('/process_teacher_login', methods=['POST'])
 def process_teacher_login():
     # Extract teacher login credentials from the request
-    data = request.json
-    username = data.get('username')
-    password = data.get('password')
-    teacherId = data.get('teacherId')
+    username = request.form.get('username')
+    teacherId = request.form.get('teacherId')
+    teacher_id=24
 
-    # Your teacher login authentication code here
-    # You might want to validate the credentials against your database
-
-    # Assuming authentication is successful, redirect to teacher dashboard
-    return jsonify(success=True)
+    # Assuming validation of username and teacherId is done in frontend
+    # Directly redirect to teacher dashboard
+    return redirect(url_for('teacher_dashboard', teacher_id=teacherId))
 
 @app.route('/user_dashboard/<int:user_id>')
 def user_dashboard(user_id):
