@@ -13,7 +13,11 @@ def process_student_login():
     username = request.form.get('username')
     userId = request.form.get('userId')
     password = request.form.get('password')
-    user_id=1
+    user_id = 1  # Assuming this is the correct user ID
+
+    if int(userId) != user_id:
+        # If user ID is incorrect, return error message
+        return render_template('login.html', error='Incorrect username, password, or user ID')
 
     # Redirect to student dashboard
     return redirect(url_for('user_dashboard', user_id=userId))
@@ -25,7 +29,11 @@ def process_teacher_login():
     # Extract teacher login credentials from the request
     username = request.form.get('username')
     teacherId = request.form.get('teacherId')
-    teacher_id=24
+    teacher_id = 24  # Assuming this is the correct teacher ID
+
+    if int(teacherId) != teacher_id:
+        # If teacher ID is incorrect, return error message
+        return render_template('login.html', error='Incorrect username, password, or teacher ID')
 
     # Assuming validation of username and teacherId is done in frontend
     # Directly redirect to teacher dashboard
