@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Authentication</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 20px; /* Added space between student and teacher login */
+    }
+    input[type="text"],
+    input[type="password"],
+    button {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .error-message {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Student Login</h2>
+    <input type="text" id="student-username" placeholder="Username">
+    <input type="text" id="student-userid" placeholder="User ID"> <!-- Modified to allow user to input user_id -->
+    <input type="password" id="student-password" placeholder="Password">
+
+    <button onclick="studentLogin()">Login</button>
+    <div id="student-error-message" class="error-message" style="display: none;"></div>
+  </div>
+
+  <div class="container">
+    <h2>Teacher Login</h2>
+    <input type="text" id="teacher-username" placeholder="Username">
+    <input type="text" id="teacher-teacherid" placeholder="Teacher ID"> <!-- Modified to allow user to input teacher_id -->
+    <input type="password" id="teacher-password" placeholder="Password">
+    
+    <button onclick="teacherLogin()">Login</button>
+    <div id="teacher-error-message" class="error-message" style="display: none;"></div>
+  </div>
+
+  <script>
+    function studentLogin() {
+  var username = document.getElementById('student-username').value;
+  var password = document.getElementById('student-password').value;
+  var userId = document.getElementById('student-userid').value;
+
+  // Send AJAX request to Flask server for student login authentication
+  fetch('/process_student_login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: username,
+      password: password,
+      userId: userId
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Redirect to student dashboard with user_id
+      window.location.href = '/user_dashboard/' + userId;
+    } else {
+      document.getElementById('student-error-message').innerText = 'Incorrect username, password, or user ID. Please try again.';
+      document.getElementById('student-error-message').style.display = 'block';
+    }
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+function teacherLogin() {
+  var username = document.getElementById('teacher-username').value;
+  var password = document.getElementById('teacher-password').value;
+  var teacherId = document.getElementById('teacher-teacherid').value;
+
+  // Send AJAX request to Flask server for teacher login authentication
+  fetch('/process_teacher_login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: username,
+      password: password,
+      teacherId: teacherId
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // Redirect to teacher dashboard with teacher_id
+      window.location.href = '/teacher_dashboard/' + teacherId;
+    } else {
+      document.getElementById('teacher-error-message').innerText = 'Incorrect username, password, or teacher ID. Please try again.';
+      document.getElementById('teacher-error-message').style.display = 'block';
+    }
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+  </script>
+  
